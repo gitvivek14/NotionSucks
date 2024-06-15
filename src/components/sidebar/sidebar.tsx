@@ -10,13 +10,15 @@ import PlanUsage from "./plan-usage";
 
 import { ScrollArea } from '../ui/scroll-area';
 import NativeNavigation from "./native-navigation";
+import UserCard from "./user-card";
+import FoldersDropdownList from "./folders-dropdown-list";
 
 interface SidebarProps{
     params:{workspaceId:string};
-    classname?:string;
+    className?:string;
 }
 
-const Sidebar: React.FC<SidebarProps> = async ({params,classname}) => {
+const Sidebar: React.FC<SidebarProps> = async ({params,className}) => {
     const supabase = createClient()
     const {data:{user}} = await supabase.auth.getUser()
     if(!user) return;
@@ -35,8 +37,8 @@ const Sidebar: React.FC<SidebarProps> = async ({params,classname}) => {
     ]);
   return (
     <aside className={twMerge(
-        'hidden sm:flex sm:flex-col w-[280px] shrink-0 p-4 md:gap-4 !justify-between',
-        classname
+      'hidden sm:flex sm:flex-col w-[280px] shrink-0 p-4 md:gap-4 !justify-between',
+      className
     )}>
         <div>
           <WorkspaceDropdown 
@@ -54,9 +56,29 @@ const Sidebar: React.FC<SidebarProps> = async ({params,classname}) => {
           subscription={subscriptionData}
           />
           <NativeNavigation myWorkspaceId={params.workspaceId}/>
-         
-
+          <ScrollArea
+          className="overflow-scroll relative
+          h-[450px]
+        "
+        >
+          <div
+            className="pointer-events-none 
+          w-full 
+          absolute 
+          bottom-0 
+          h-20 
+          bg-gradient-to-t 
+          from-background 
+          to-transparent 
+          z-40"
+          />
+          <FoldersDropdownList
+            workspaceFolders={workspaceFolderData || []}
+            workspaceId={params.workspaceId}
+          />
+        </ScrollArea>
         </div>
+        <UserCard subscription={subscriptionData} />
     </aside>
   )
 }

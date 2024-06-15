@@ -1,11 +1,13 @@
 
-import { Settings } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import CypressHomeIcon from '../icons/cypressHomeIcon';
 import CypressSettingsIcon from '../icons/cypressSettingsIcon';
 import CypressTrashIcon from '../icons/cypressTrashIcon';
+import Settings from '../settings/settings';
+import TrashRestore from '../trash/trash-restore';
+import Trash from '../trash/trash';
 interface NativeNavigationProps {
     myWorkspaceId: string;
     className?: string;
@@ -37,10 +39,21 @@ const NativeNavigation:React.FC<NativeNavigationProps> = (
             transition-all
             gap-2
             cursor-pointer">
+                 <CypressSettingsIcon />
                 <span>Settings</span>
             </li>
         </Settings>
 
+        <Trash>
+            <li  className="group/native
+            flex
+            text-Neutrals/neutrals-7
+            transition-all
+            gap-2">
+                <CypressTrashIcon/>
+                <span>Trash</span>
+            </li>
+        </Trash>
     </ul>
    </nav>
   )

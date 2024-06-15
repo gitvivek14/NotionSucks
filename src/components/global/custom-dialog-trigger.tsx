@@ -31,12 +31,12 @@ import {
             {children}
         </DialogTrigger>
         <DialogContent
-        className='h-screen 
+        className="h-screen
         block
-        sm:h-[40px]
+        sm:h-[440px]
         overflow-scroll
         w-full
-        '
+      "
         >
             <DialogHeader>
                 <DialogTitle>

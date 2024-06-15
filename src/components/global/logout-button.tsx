@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import { useAppState } from '@/lib/providers/state-provider';
 import { useSupabaseUser } from '@/lib/providers/supabase-user-provider';

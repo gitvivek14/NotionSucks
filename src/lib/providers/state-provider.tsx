@@ -11,6 +11,7 @@ import { File, Folder, workspace } from '../supabase/supabase.types';
 import { usePathname } from 'next/navigation';;
 import { getFiles } from '../supabase/queries';
 
+
 export type appFoldersType = Folder & { files: File[] | [] };
 export type appWorkspaceType = workspace & {
   folders: appFoldersType[] |[];
@@ -23,6 +24,32 @@ interface Appstate {
 type Action = 
 | {type:'ADD_WORKSPACE'; payload:appWorkspaceType}
 | {type:'SET_FILES'; payload:{workspaceId:string; files:File[];folderId:string}}
+| {type:'UPDATE_WORKSPACE',payload:{
+  workspace:Partial<appWorkspaceType>;
+  workspaceId:string;
+}}
+| {
+  type: 'SET_WORKSPACES';
+  payload: { workspaces: appWorkspaceType[] | [] };
+}
+| {
+  type:'DELETE_WORKSPACE';
+  payload:{
+    workspaceId:string;
+  }
+}
+| {
+  type:'ADD_FOLDERS';
+  payload: { workspaceId: string; folder: appFoldersType };
+}
+| {
+  type: 'ADD_FILE';
+  payload: { workspaceId: string; file: File; folderId: string };
+}
+| {
+  type: 'SET_FOLDERS';
+  payload: { workspaceId: string; folders: [] | appFoldersType[] };
+}
 
 const initialState:Appstate = {workspaces:[]}
 const appReducer = (
@@ -35,7 +62,62 @@ const appReducer = (
         ...state,
         workspaces:[...state.workspaces,action.payload]
       }
-
+    case 'UPDATE_WORKSPACE':
+      return{
+        ...state,
+        workspaces:state.workspaces.map((workspace)=>{
+          if(workspace.id === action.payload.workspaceId){
+            return{
+              ...workspace,
+              ...action.payload.workspace,
+            };
+          }
+          return workspace;
+        })
+      }
+      case 'DELETE_WORKSPACE':
+        return {
+          ...state,
+          workspaces: state.workspaces.filter(
+            (workspace) => workspace.id !== action.payload.workspaceId
+          ),
+        };
+      case 'ADD_FOLDERS':
+        return{
+          ...state,
+          workspaces:state.workspaces.map((workspace)=>{
+            return{
+              ...workspace,
+              folders:[...workspace.folders,action.payload.folder].sort(
+                (a,b)=> new Date(a.createdAt).getTime()-
+                new Date(b.createdAt).getTime()
+              )
+            }
+          })
+        }
+        case 'SET_FOLDERS':
+          return {
+            ...state,
+            workspaces: state.workspaces.map((workspace) => {
+              if (workspace.id === action.payload.workspaceId) {
+                return {
+                  ...workspace,
+                  folders: action.payload.folders.sort(
+                    (a, b) =>
+                      new Date(a.createdAt).getTime() -
+                      new Date(b.createdAt).getTime()
+                  ),
+                };
+              }
+              return workspace;
+            }),
+          };
+    
+    case 'SET_WORKSPACES':
+      return{
+        ...state,
+        workspaces:action.payload.workspaces
+      }
     case 'SET_FILES':
       return{
         ...state,
@@ -57,6 +139,32 @@ const appReducer = (
           return workspace;
         })
       };
+
+      case 'ADD_FILE':
+        return {
+          ...state,
+          workspaces: state.workspaces.map((workspace) => {
+            if (workspace.id === action.payload.workspaceId) {
+              return {
+                ...workspace,
+                folders: workspace.folders.map((folder) => {
+                  if (folder.id === action.payload.folderId) {
+                    return {
+                      ...folder,
+                      files: [...folder.files, action.payload.file].sort(
+                        (a, b) =>
+                          new Date(a.createdAt).getTime() -
+                          new Date(b.createdAt).getTime()
+                      ),
+                    };
+                  }
+                  return folder;
+                }),
+              };
+            }
+            return workspace;
+          }),
+        };
   }
 }
 

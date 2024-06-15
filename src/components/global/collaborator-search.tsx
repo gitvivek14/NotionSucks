@@ -16,6 +16,7 @@ import {
   import { ScrollArea } from '../ui/scroll-area';
   import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
   import { Button } from '../ui/button';
+import { getUsersfromSearch } from '@/lib/supabase/queries';
   //queries
 interface CollaboratorSearchProps {
     existingCollaborators: User[] | [];
@@ -42,7 +43,7 @@ const CollaborateSearch: React.FC<CollaboratorSearchProps> = (
       const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (timerRef) clearTimeout(timerRef.current);
         // timerRef.current = setTimeout(async () => {
-        //   const res = await getUsersFromSearch(e.target.value);
+        //   const res = await getUsersfromSearch(e.target.value);
         //   setSearchResults(res);
         // }, 450);
       };
