@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = async ({params,className}) => {
     ]);
   return (
     <aside className={twMerge(
-      'hidden sm:flex sm:flex-col w-[280px] shrink-0 p-4 md:gap-4 !justify-between',
+      'hidden sm:flex sm:flex-col w-[280px] shrink-0 p-4 md:gap-4 justify-between overflow-hidden',
       className
     )}>
         <div>
@@ -57,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = async ({params,className}) => {
           />
           <NativeNavigation myWorkspaceId={params.workspaceId}/>
           <ScrollArea
-          className="overflow-scroll relative
+          className=" relative
           h-[450px]
         "
         >

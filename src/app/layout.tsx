@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -5,6 +6,8 @@ import { ThemeProvider } from "@/lib/providers/next-theme-provider";
 import { twMerge } from "tailwind-merge";
 import db from "@/lib/supabase/db";
 import AppStateProvider from '@/lib/providers/state-provider';
+import {SupabaseUserProvider} from '@/lib/providers/supabase-user-provider';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +26,10 @@ export default function RootLayout({
       <body className={twMerge('bg-background', inter.className)}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <AppStateProvider>
+            <SupabaseUserProvider>
           {children}
+          <Toaster/>
+            </SupabaseUserProvider>
           </AppStateProvider>
 
         </ThemeProvider>

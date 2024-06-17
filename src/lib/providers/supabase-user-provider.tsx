@@ -23,7 +23,7 @@ export const useSupabaseUser = ()=>{
 interface SupabaseUserProviderProps {
     children: React.ReactNode;
   }
-const SupabaseUserProvider:React.FC<SupabaseUserProviderProps>  = ({
+export const SupabaseUserProvider:React.FC<SupabaseUserProviderProps>  = ({
     children
 }) => {
 
@@ -56,4 +56,3 @@ const SupabaseUserProvider:React.FC<SupabaseUserProviderProps>  = ({
   )
 }
 
-export default SupabaseUserProvider

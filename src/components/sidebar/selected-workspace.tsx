@@ -26,30 +26,30 @@ const SelectedWorkspace: React.FC<SelectedWorkspaceProps> = ({
 
   return (
     <Link
-    href={`/dashboard/${workspace.id}`}
-    onClick={()=>{
-        if(onClick) onClick(workspace)
-    }}
-    className="flex 
-    rounded-md 
-    hover:bg-muted 
-    transition-all 
-    flex-row 
-    p-2 
-    gap-4 
-    justify-center 
-    cursor-pointer 
-    items-center 
-    my-2"
+      href={`/dashboard/${workspace.id}`}
+      onClick={() => {
+        if (onClick) onClick(workspace);
+      }}
+      className="flex 
+      rounded-md 
+      hover:bg-muted 
+      transition-all 
+      flex-row 
+      p-2 
+      gap-4 
+      justify-center 
+      cursor-pointer 
+      items-center 
+      my-2"
     >
-         <Image
+      <Image
         src={workspaceLogo}
         alt="workspace logo"
         width={26}
         height={26}
         objectFit="cover"
       />
-       <div className="flex flex-col">
+      <div className="flex flex-col">
         <p
           className="text-lg 
         w-[170px] 
@@ -60,7 +60,6 @@ const SelectedWorkspace: React.FC<SelectedWorkspaceProps> = ({
           {workspace.title}
         </p>
       </div>
-
     </Link>
   )
 }

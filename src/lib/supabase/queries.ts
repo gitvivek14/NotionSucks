@@ -72,8 +72,25 @@ export const createWorkspace = async (workspace: workspace) => {
     } catch (error) {
       return { data: [], error: 'Error' };
     }
-
   }
+  export const getFileDetails = async (fileId: string) => {
+    const isValid = validate(fileId);
+    if (!isValid) {
+      data: [];
+      error: 'Error';
+    }
+    try {
+      const response = (await db
+        .select()
+        .from(files)
+        .where(eq(files.id, fileId))
+        .limit(1)) as File[];
+      return { data: response, error: null };
+    } catch (error) {
+      console.log('🔴Error', error);
+      return { data: [], error: 'Error' };
+    }
+  };
   
   export const getWorkspaceDetails = async(workspaceId:string)=>{
     const isValid = validate(workspaceId)

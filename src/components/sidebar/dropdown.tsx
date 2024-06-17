@@ -71,7 +71,18 @@ const Dropdown: React.FC<DropdownProps> = (
       return stateTitle;
     }
   }, [state, listType, workspaceId, id, title]);
-
+  const navigatatePage = (accordionId: string, type: string) => {
+    if (type === 'folder') {
+      router.push(`/dashboard/${workspaceId}/${accordionId}`);
+    }
+    if (type === 'file') {
+      router.push(
+        `/dashboard/${workspaceId}/${folderId}/${
+          accordionId.split('folder')[1]
+        }`
+      );
+    }
+  };
   const folderTitleChange = (e:any)=>{
     if(!workspaceId) return;
     const fid = id.split('folder')
@@ -276,7 +287,7 @@ const Dropdown: React.FC<DropdownProps> = (
    className={listStyles}
    onClick={(e)=>{
     e.stopPropagation()
-    // navigatatePage(id,listType)
+    navigatatePage(id,listType)
    }}
    >
     <AccordionTrigger
@@ -315,7 +326,7 @@ const Dropdown: React.FC<DropdownProps> = (
         >
         </input>
       </div>
-      <div>
+      <div className={hoverStyles}>
         <TooltipComponent message="Delete Folder">
           <Trash
           onClick={movetoTrash}

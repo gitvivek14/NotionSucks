@@ -59,7 +59,7 @@ import { useSubscriptionModal } from '@/lib/providers/subscription-modal-provide
 import { subscriptionStatus } from '../../../migrations/schema';
 import Link from 'next/link';
 const SettingsForm = () => {
-    const toast  = useToast()
+    const {toast}  = useToast()
     const { user, subscription } = useSupabaseUser();
     const {open,setOpen} = useSubscriptionModal()
     const router = useRouter()
@@ -349,16 +349,16 @@ const SettingsForm = () => {
           type='submit'
           size={'sm'}
           variant={'destructive'}
-          className='mt-4
+          className="mt-4
           text-sm
           bg-destructive/40
           border-2
           border-destructive
-          '
+          "
           onClick={async()=>{
             if(!workspaceId) return;
             await deleteWorkspace(workspaceId);
-            // toast({ title: 'Successfully deleted your workspae' });
+            toast({ title: 'Successfully deleted your workspae' });
             dispatch({ type: 'DELETE_WORKSPACE', payload: {
                 workspaceId:workspaceId
             } });

@@ -1,7 +1,6 @@
 'use client';
-import React,{use, useState} from 'react'
+import React,{useState} from 'react'
 import { useSupabaseUser } from '@/lib/providers/supabase-user-provider';
-//provider
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { User, workspace } from '@/lib/supabase/supabase.types';
@@ -21,7 +20,7 @@ import {
   import { Lock, Plus, Share } from 'lucide-react';
   import { Button } from '../ui/button';
   import { v4 } from 'uuid';
-import { createWorkspace } from '@/lib/supabase/queries';
+import { createWorkspace,addCollaborators } from '@/lib/supabase/queries';
 import CollaborateSearch from './collaborator-search';
 
 
@@ -42,12 +41,13 @@ const WorkspaceCreator = () => {
       setCollaborators(collaborators.filter((c)=>c.id!=user.id))
     }
 
-    const createItem = async()=>{
-      setIsLoading(true)
-      const uuid =v4()
-      if(user?.id){
-        const newWorkspace:workspace = {
-          data:null,
+    const createItem = async () => {
+      console.log("creating workspace");
+      setIsLoading(true);
+      const uuid = v4();
+      if (user?.id) {
+        const newWorkspace: workspace = {
+          data: null,
           createdAt: new Date().toISOString(),
           iconId: '💼',
           id: uuid,
@@ -57,23 +57,32 @@ const WorkspaceCreator = () => {
           logo: null,
           bannerUrl: '',
         };
-        if(permissions==='private'){
-          toast({title:'Success',description:'Created Workspace'})
+        if (permissions === 'private') {
+          toast({ title: 'Success', description: 'Created the workspace' });
           await createWorkspace(newWorkspace);
-          router.refresh()
+          router.refresh();
+        }
+        if (permissions === 'shared') {
+          toast({ title: 'Success', description: 'Created the workspace' });
+          await createWorkspace(newWorkspace);
+          await addCollaborators(collaborators, uuid);
+          router.refresh();
         }
       }
-      setIsLoading(false)
-    }
+      setIsLoading(false);
+    };
   return (
-    <div className='flex gap-4 flex-col'>
+    <div className="flex gap-4 flex-col">
       <div>
-        <Label htmlFor='name' className='text-sm text-muted-foreground'>
+      <Label
+          htmlFor="name"
+          className="text-sm text-muted-foreground"
+        >
           Name
         </Label>
         <div className='flex justify-center items-center gap-2'>
           <Input
-          name='name'
+          name="name"
           value={title}
           placeholder='workspace name'
           onChange={(e)=>{
@@ -96,20 +105,22 @@ const WorkspaceCreator = () => {
       }}
       defaultValue={permissions}
       >
-        <SelectTrigger className='w-full h-26 -mt-3'>
+         <SelectTrigger className="w-full h-26 -mt-3">
           <SelectValue/>
         </SelectTrigger>
        <SelectContent>
         <SelectGroup>
-          <SelectItem value='private'>
-            <div className='p-2
-            flex 
-            gap-4 
-            justify-center
-            items-center
-            '>
+        <SelectItem value="private">
+                <div
+                  className="p-2
+                  flex
+                  gap-4
+                  justify-center
+                  items-center
+                "
+                >
               <Lock/>
-              <article className='text-left flex flex-col'>
+              <article className="text-left flex flex-col">
                 <span>
                   Private
                   <p>
@@ -142,8 +153,8 @@ const WorkspaceCreator = () => {
           }}
           >
             <Button
-            type='button'
-            className='text-sm mt-4'
+              type="button"
+              className="text-sm mt-4"
             >
               <Plus/>
               Add Collaborators
@@ -153,50 +164,50 @@ const WorkspaceCreator = () => {
             <span className='text-sm text-muted-foreground'>
             Collaborators {collaborators.length || ''}
             </span>
-            <ScrollArea className='
+            <ScrollArea
+              className="
             h-[120px]
             overflow-y-scroll
             w-full
             rounded-md
             border
-            border-muted-foreground/20
-            '>
+            border-muted-foreground/20"
+            >
               {collaborators.length ? (
-                  collaborators.map((c) => (
-                    <div
-                      className="p-4 flex
-                        justify-between
-                        items-center
-                  "
-                      key={c.id}
-                    >
-                      <div className="flex gap-4 items-center">
-                        <Avatar>
-                          <AvatarImage src="/avatars/7.png" />
-                          <AvatarFallback>PJ</AvatarFallback>
-                        </Avatar>
-                        <div
-                          className="text-sm 
-                            gap-2
-                            text-muted-foreground
-                            overflow-hidden
-                            overflow-ellipsis
-                            sm:w-[300px]
-                            w-[140px]
-                          "
-                        >
-                          {c.email}
-                        </div>
-                      </div>
-                      <Button
-                        variant="secondary"
-                        onClick={() => removeCollaborator(c)}
+                collaborators.map((c) => (
+                  <div
+                    className="p-4 flex
+                      justify-between
+                      items-center
+                "
+                    key={c.id}
+                  >
+                    <div className="flex gap-4 items-center">
+                      <Avatar>
+                        <AvatarImage src="/avatars/7.png" />
+                        <AvatarFallback>PJ</AvatarFallback>
+                      </Avatar>
+                      <div
+                        className="text-sm 
+                          gap-2
+                          text-muted-foreground
+                          overflow-hidden
+                          overflow-ellipsis
+                          sm:w-[300px]
+                          w-[140px]
+                        "
                       >
-                        Remove
-                      </Button>
+                        {c.email}
+                      </div>
                     </div>
-                  ))
-
+                    <Button
+                      variant="secondary"
+                      onClick={() => removeCollaborator(c)}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))
               ) : (
                 <div
                   className="absolute
