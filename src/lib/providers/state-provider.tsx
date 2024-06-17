@@ -50,6 +50,23 @@ type Action =
   type: 'SET_FOLDERS';
   payload: { workspaceId: string; folders: [] | appFoldersType[] };
 }
+| {
+  type: 'UPDATE_FOLDER';
+  payload: {
+    folder: Partial<appFoldersType>;
+    workspaceId: string;
+    folderId: string;
+  };
+}
+| {
+  type: 'UPDATE_FILE';
+  payload: {
+    file: Partial<File>;
+    folderId: string;
+    workspaceId: string;
+    fileId: string;
+  };
+};
 
 const initialState:Appstate = {workspaces:[]}
 const appReducer = (
@@ -75,6 +92,8 @@ const appReducer = (
           return workspace;
         })
       }
+
+
       case 'DELETE_WORKSPACE':
         return {
           ...state,
@@ -112,12 +131,86 @@ const appReducer = (
               return workspace;
             }),
           };
-    
+    case 'UPDATE_FOLDER':{
+      return{
+        ...state,
+        workspaces:state.workspaces.map((workspace)=>{
+          if(workspace.id === action.payload.workspaceId){
+            return{
+              ...workspace,
+              folders: workspace.folders.map((folder)=>{
+                if(folder.id===action.payload.folderId){
+                  return {...folder,...action.payload.folder}
+                }
+                return folder;
+              })
+            }
+          }
+          return workspace
+        })
+      }
+    }
+
+    case 'UPDATE_FILE':
+      return {
+        ...state,
+        workspaces: state.workspaces.map((workspace) => {
+          if (workspace.id === action.payload.workspaceId) {
+            return {
+              ...workspace,
+              folders: workspace.folders.map((folder) => {
+                if (folder.id === action.payload.folderId) {
+                  return {
+                    ...folder,
+                    files: folder.files.map((file) => {
+                      if (file.id === action.payload.fileId) {
+                        return {
+                          ...file,
+                          ...action.payload.file,
+                        };
+                      }
+                      return file;
+                    }),
+                  };
+                }
+                return folder;
+              }),
+            };
+          }
+          return workspace;
+        }),
+      };
     case 'SET_WORKSPACES':
       return{
         ...state,
         workspaces:action.payload.workspaces
       }
+
+      case 'ADD_FILE':
+        return {
+          ...state,
+          workspaces: state.workspaces.map((workspace) => {
+            if (workspace.id === action.payload.workspaceId) {
+              return {
+                ...workspace,
+                folders: workspace.folders.map((folder) => {
+                  if (folder.id === action.payload.folderId) {
+                    return {
+                      ...folder,
+                      files: [...folder.files, action.payload.file].sort(
+                        (a, b) =>
+                          new Date(a.createdAt!).getTime()-
+                          new Date(b.createdAt!).getTime()
+                      ),
+                    };
+                  }
+                  return folder;
+                }),
+              };
+            }
+            return workspace;
+          }),
+        };
     case 'SET_FILES':
       return{
         ...state,
@@ -139,33 +232,10 @@ const appReducer = (
           return workspace;
         })
       };
-
-      case 'ADD_FILE':
-        return {
-          ...state,
-          workspaces: state.workspaces.map((workspace) => {
-            if (workspace.id === action.payload.workspaceId) {
-              return {
-                ...workspace,
-                folders: workspace.folders.map((folder) => {
-                  if (folder.id === action.payload.folderId) {
-                    return {
-                      ...folder,
-                      files: [...folder.files, action.payload.file].sort(
-                        (a, b) =>
-                          new Date(a.createdAt).getTime() -
-                          new Date(b.createdAt).getTime()
-                      ),
-                    };
-                  }
-                  return folder;
-                }),
-              };
-            }
-            return workspace;
-          }),
-        };
+        default:
+          return initialState;
   }
+
 }
 
 
