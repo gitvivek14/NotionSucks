@@ -34,7 +34,6 @@ import {
         className="h-screen
         block
         sm:h-[440px]
-        overflow-scroll
         w-full
       "
         >

@@ -92,24 +92,26 @@ export const createWorkspace = async (workspace: workspace) => {
     }
   };
   
-  export const getWorkspaceDetails = async(workspaceId:string)=>{
-    const isValid = validate(workspaceId)
-    if(!isValid){
-        return{
-            data :  [],
-            error:'Error'
-        }
-    }
+  export const getWorkspaceDetails = async (workspaceId: string) => {
+    const isValid = validate(workspaceId);
+    if (!isValid)
+      return {
+        data: [],
+        error: 'Error',
+      };
+  
     try {
-        const response = (await db.select().from(workspaces)
-        .where(eq(workspaces.id,workspaceId)).limit(1)) as workspace[];
-        return ({date : response , error:null})
-        
+      const response = (await db
+        .select()
+        .from(workspaces)
+        .where(eq(workspaces.id, workspaceId))
+        .limit(1)) as workspace[];
+      return { data: response, error: null };
     } catch (error) {
-        console.log(error);
-        return { data: [], error: 'Error' };
+      console.log(error);
+      return { data: [], error: 'Error' };
     }
-  }
+  };
 
   export const getFolders = async(workspaceId:string)=>{
     const isValid = validate(workspaceId)
@@ -339,3 +341,11 @@ export const getUsersfromSearch = async(email:string)=>
       return { data: null, error: 'Error' };
     }
   };
+
+
+  export const findUser = async(userId:string)=>{
+    const response = await db.query.users.findFirst({
+      where:(u,{eq})=> eq(u.id,userId)
+    });
+    return response
+  }

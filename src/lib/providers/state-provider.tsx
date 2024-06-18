@@ -59,6 +59,14 @@ type Action =
   };
 }
 | {
+  type: 'DELETE_FILE';
+  payload: { workspaceId: string; folderId: string; fileId: string };
+}
+| {
+  type: 'DELETE_FOLDER';
+  payload: { workspaceId: string; folderId: string };
+}
+| {
   type: 'UPDATE_FILE';
   payload: {
     file: Partial<File>;
@@ -67,6 +75,7 @@ type Action =
     fileId: string;
   };
 };
+
 
 const initialState:Appstate = {workspaces:[]}
 const appReducer = (
@@ -101,6 +110,44 @@ const appReducer = (
             (workspace) => workspace.id !== action.payload.workspaceId
           ),
         };
+
+      case 'DELETE_FILE':
+        return{
+          ...state,
+          workspaces:state.workspaces.map((workspace)=>{
+            if(workspace.id === action.payload.workspaceId){
+              return{
+                ...workspace,
+                folder:workspace.folders.map((folder)=>{
+                  if(folder.id===action.payload.folderId){
+                    return{
+                      ...folder,
+                      files:folder.files.filter((file)=> file.id !== action.payload.fileId)
+                    }
+                  };
+                  return folder;
+                }),
+              }
+            }
+            return workspace
+          })
+        }
+
+        case 'DELETE_FOLDER':
+      return {
+        ...state,
+        workspaces: state.workspaces.map((workspace) => {
+          if (workspace.id === action.payload.workspaceId) {
+            return {
+              ...workspace,
+              folders: workspace.folders.filter(
+                (folder) => folder.id !== action.payload.folderId
+              ),
+            };
+          }
+          return workspace;
+        }),
+      };
       case 'ADD_FOLDERS':
         return{
           ...state,
