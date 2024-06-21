@@ -37,6 +37,7 @@ const NativeNavigation:React.FC<NativeNavigationProps> = (
             flex
             text-Neutrals/neutrals-7
             transition-all
+            
             gap-2
             cursor-pointer">
                  <CypressSettingsIcon />
