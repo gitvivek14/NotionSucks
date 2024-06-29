@@ -56,7 +56,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Alert, AlertDescription } from '../ui/alert';
 import { postData } from '@/lib/utils';
 import { useSubscriptionModal } from '@/lib/providers/subscription-modal-provider';
-import { subscriptionStatus } from '../../../migrations/schema';
 import Link from 'next/link';
 const SettingsForm = () => {
     const {toast}  = useToast()

@@ -84,14 +84,17 @@ const QuillEditor:React.FC<QuillEditorProps> = (
     id:string
     email:string
     avatar:string
-  }[]>([
-
-    {id:'1',avatar:"12223",email:"abc123@gmail.com"},
-    {id:'2',avatar:"12223",email:"abc123@gmail.com"}
-  ]);
+  }[]>([]);
   const [deletingBanner, setDeletingBanner] = useState(false);
   const[saving,setSaving] = useState(false)
   const [localCursors, setLocalCursors] = useState<any>([]);
+
+
+  const handleRef = (wrapper: HTMLDivElement | null) => {
+    if (wrapper !== null) {
+      wrapperRef(wrapper);
+    }
+  };
 
   const details = useMemo(()=>{
     let selectedDir;
@@ -160,27 +163,27 @@ const QuillEditor:React.FC<QuillEditorProps> = (
 
   },[state,pathname,workspaceId])
 
-  const wrapperRef = useCallback(async(wrapper:any)=>{
-    if(typeof window != 'undefined'){
-      if(wrapper==null) return;
-      wrapper.innerHTML = ''
-      const editor = document.createElement('div')
-      wrapper.append(editor)
-      const Quill = (await import ('quill')).default;
-      const QuillCursors = (await import ('quill-cursors')).default;
-      Quill.register('modules/cursors',QuillCursors)
-      const q = new Quill(editor,{
+  const wrapperRef = useCallback(async (wrapper: any) => {
+    if (typeof window !== 'undefined') {
+      if (wrapper === null) return;
+      wrapper.innerHTML = '';
+      const editor = document.createElement('div');
+      wrapper.append(editor);
+      const Quill = (await import('quill')).default;
+      const QuillCursors = (await import('quill-cursors')).default;
+      Quill.register('modules/cursors', QuillCursors);
+      const q = new Quill(editor, {
         theme: 'snow',
-        modules:{
-          toolbar:TOOLBAR_OPTIONS,
-          cursors:{
-            transformOnTextChange:true
-          }
-        }
+        modules: {
+          toolbar: TOOLBAR_OPTIONS,
+          cursors: {
+            transformOnTextChange: true,
+          },
+        },
       });
-      setQuill(q)
+      setQuill(q);
     }
-  },[])
+  }, []);
 
 
   const restoreFileHandler = async()=>{
@@ -706,14 +709,14 @@ socket.emit('send-changes',delta,fileId)
           </span>
       </div>
       <div
+          ref={wrapperRef}
           id="container"
           className="max-w-[800px]"
-          ref={wrapperRef}
         ></div>
 
     </div>
     </>
-  )
+  );
 }
-
+// fedaf54603@exeneli.com
 export default QuillEditor

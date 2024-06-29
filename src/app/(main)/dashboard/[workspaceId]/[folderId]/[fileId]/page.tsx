@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import React from 'react'
 import { getFileDetails } from '@/lib/supabase/queries';
 import { redirect } from 'next/navigation';

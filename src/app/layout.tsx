@@ -33,9 +33,7 @@ export default function RootLayout({
               </SocketProvider>
             </SupabaseUserProvider>
           </AppStateProvider>
-
         </ThemeProvider>
-        
         </body>
     </html>
   );
